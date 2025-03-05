@@ -1,13 +1,31 @@
 import streamlit as st
 import qrcode
 from io import BytesIO
-from PIL import Image  # PillowのImageを明示的にインポート
+from PIL import Image
+
+def generate_vcard(name, furigana, personal_phone, personal_email, 
+                   company_name, company_zip, company_address, company_phone, company_fax):
+    """iPhone対応のVCARD形式を作成"""
+    vcard = f"""BEGIN:VCARD
+VERSION:3.0
+N:{name};;;;
+FN:{furigana}
+TEL;TYPE=CELL:{personal_phone}
+EMAIL:{personal_email}
+ORG:{company_name}
+ADR;TYPE=WORK:;;{company_address};;{company_zip};;;
+TEL;TYPE=WORK:{company_phone}
+TEL;TYPE=FAX:{company_fax}
+END:VCARD"""
+    
+    # iPhone対応のため、改行コードを明示的に "\r\n" にする
+    return vcard.replace("\n", "\r\n")
 
 def generate_qr_code(data):
     """QRコードを生成し、画像をバイナリデータに変換"""
     qr = qrcode.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,  # 高エラー修正レベル
         box_size=10,
         border=4,
     )
@@ -45,19 +63,8 @@ def main():
         submit_button = st.form_submit_button("QRコードを生成")
 
     if submit_button:
-        vcard_data = f"""
-        BEGIN:VCARD
-        VERSION:3.0
-        N:{name}
-        FN:{furigana}
-        TEL;TYPE=CELL:{personal_phone}
-        EMAIL:{personal_email}
-        ORG:{company_name}
-        ADR;TYPE=WORK:;;{company_address};{company_zip}
-        TEL;TYPE=WORK:{company_phone}
-        TEL;TYPE=FAX:{company_fax}
-        END:VCARD
-        """
+        vcard_data = generate_vcard(name, furigana, personal_phone, personal_email, 
+                                    company_name, company_zip, company_address, company_phone, company_fax)
 
         # QRコードを生成（BytesIOオブジェクト）
         qr_bytes = generate_qr_code(vcard_data)
