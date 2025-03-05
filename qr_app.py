@@ -65,7 +65,7 @@ def main():
         personal_email = st.text_input("📧 個人メールアドレス")
 
         st.subheader("🏢 会社情報")
-        company_name = st.text_input("🏢 会社名")
+        company_name = st.text_input("🏢 会社名", "株式会社フェローズ")
         company_department = st.text_input("💡 部署")
         company_position = st.text_input("💡 役職")
         company_zip = st.text_input("📮 会社郵便番号")
