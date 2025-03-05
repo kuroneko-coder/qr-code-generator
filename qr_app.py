@@ -52,8 +52,8 @@ def generate_qr_code(data):
     return img_bytes  # BytesIOオブジェクトを返す
 
 def main():
-    st.title("✨ QRコード作成アプリ ✨")
-    st.write("名刺の情報をQRコード化し、iphoneの電話帳に登録できる形式で出力します。")
+    st.title("✨ QRコード作成_UIWebアプリ ✨")
+    st.write("個人/企業情報をQRコード化し、iphoneの電話帳に登録できる形式で出力します。")
 
     with st.form("business_card_form"):
         st.subheader("📜 個人情報")
