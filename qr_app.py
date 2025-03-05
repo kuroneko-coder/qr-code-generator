@@ -4,9 +4,9 @@ from io import BytesIO
 from PIL import Image
 
 def generate_vcard(last_name, first_name, last_furigana, first_furigana,
-                   personal_phone, personal_email, home_address, home_zip,
+                   personal_phone, personal_email,
                    company_name, company_zip, company_address, company_phone, company_fax,
-                   company_position, company_department, company_website, linkedin, twitter):
+                   company_position, company_department, company_website, instagram, youtube, pr_link):
     """iPhone対応のVCARD形式を作成"""
     vcard = f"""BEGIN:VCARD
 VERSION:3.0
@@ -20,11 +20,11 @@ TEL;TYPE=CELL,VOICE:{personal_phone}
 TEL;TYPE=WORK,VOICE:{company_phone}
 TEL;TYPE=FAX,WORK:{company_fax}
 EMAIL;TYPE=WORK:{personal_email}
-ADR;TYPE=HOME:;;{home_address};{home_zip};;;
 ADR;TYPE=WORK:;;{company_address};{company_zip};;;
 URL:{company_website}
-X-SOCIALPROFILE;TYPE=LinkedIn:{linkedin}
-X-SOCIALPROFILE;TYPE=Twitter:{twitter}
+X-SOCIALPROFILE;TYPE=Instagram:{instagram}
+X-SOCIALPROFILE;TYPE=YouTube:{youtube}
+URL:{pr_link}
 END:VCARD"""
 
     # iPhone対応のため、改行コードを "\r\n" に統一
@@ -52,41 +52,40 @@ def generate_qr_code(data):
     return img_bytes  # BytesIOオブジェクトを返す
 
 def main():
-    st.title("QRコード作成アプリ")
-    st.write("名刺の情報をQRコード化し、スマートフォンの電話帳に登録できる形式で出力します。")
+    st.title("✨ QRコード作成アプリ ✨")
+    st.write("名刺の情報をQRコード化し、iphoneの電話帳に登録できる形式で出力します。")
 
     with st.form("business_card_form"):
-        st.subheader("📌 個人情報")
-        last_name = st.text_input("姓")
-        first_name = st.text_input("名")
-        last_furigana = st.text_input("姓（フリガナ）")
-        first_furigana = st.text_input("名（フリガナ）")
-        personal_phone = st.text_input("個人電話番号")
-        personal_email = st.text_input("個人メールアドレス")
-        home_address = st.text_input("自宅住所")
-        home_zip = st.text_input("自宅郵便番号")
+        st.subheader("📜 個人情報")
+        last_name = st.text_input("📝 姓")
+        first_name = st.text_input("📝 名")
+        last_furigana = st.text_input("📝 姓（フリガナ）")
+        first_furigana = st.text_input("📝 名（フリガナ）")
+        personal_phone = st.text_input("📱 個人電話番号")
+        personal_email = st.text_input("📧 個人メールアドレス")
 
         st.subheader("🏢 会社情報")
-        company_name = st.text_input("会社名")
-        company_department = st.text_input("部署")
-        company_position = st.text_input("役職")
-        company_zip = st.text_input("会社郵便番号")
-        company_address = st.text_input("会社住所")
-        company_phone = st.text_input("会社代表電話番号")
-        company_fax = st.text_input("会社代表FAX番号")
-        company_website = st.text_input("会社Webサイト")
+        company_name = st.text_input("🏢 会社名")
+        company_department = st.text_input("💡 部署")
+        company_position = st.text_input("💡 役職")
+        company_zip = st.text_input("📮 会社郵便番号")
+        company_address = st.text_input("🏙️ 会社住所")
+        company_phone = st.text_input("☎️ 会社代表電話番号")
+        company_fax = st.text_input("📠 会社代表FAX番号")
+        company_website = st.text_input("🔎 会社Webサイト")
 
-        st.subheader("🌍 SNS・その他")
-        linkedin = st.text_input("LinkedIn プロフィールURL")
-        twitter = st.text_input("Twitter プロフィールURL")
+        st.subheader("🌍 SNS・PR情報")
+        instagram = st.text_input("Instagram プロフィールURL")
+        youtube = st.text_input("YouTube チャンネルURL")
+        pr_link = st.text_input("PR紹介URL", "https://fellows2008.co.jp/service/ai/")
 
         submit_button = st.form_submit_button("QRコードを生成")
 
     if submit_button:
         vcard_data = generate_vcard(last_name, first_name, last_furigana, first_furigana,
-                                    personal_phone, personal_email, home_address, home_zip,
+                                    personal_phone, personal_email,
                                     company_name, company_zip, company_address, company_phone, company_fax,
-                                    company_position, company_department, company_website, linkedin, twitter)
+                                    company_position, company_department, company_website, instagram, youtube, pr_link)
 
         # QRコードを生成（BytesIOオブジェクト）
         qr_bytes = generate_qr_code(vcard_data)
