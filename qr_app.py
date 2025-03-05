@@ -3,21 +3,23 @@ import qrcode
 from io import BytesIO
 from PIL import Image
 
-def generate_vcard(name, furigana, personal_phone, personal_email, 
+def generate_vcard(last_name, first_name, last_furigana, first_furigana,
+                   personal_phone, personal_email, 
                    company_name, company_zip, company_address, company_phone, company_fax):
     """iPhone対応のVCARD形式を作成"""
     vcard = f"""BEGIN:VCARD
 VERSION:3.0
-N:{name};;;;
-FN:{name}
-SORT-STRING:{furigana}
-TEL;TYPE=CELL:{personal_phone}
-EMAIL:{personal_email}
+N:{last_name};{first_name};;;
+FN:{first_name} {last_name}
+X-PHONETIC-LAST-NAME:{last_furigana}
+X-PHONETIC-FIRST-NAME:{first_furigana}
 ORG:{company_name}
 TITLE:勤務先
-ADR;TYPE=WORK:;;{company_name} {company_address};{company_zip};;;
-TEL;TYPE=WORK:{company_phone}
-TEL;TYPE=FAX:{company_fax}
+TEL;TYPE=CELL,VOICE:{personal_phone}
+TEL;TYPE=WORK,VOICE:{company_phone}
+TEL;TYPE=FAX,WORK:{company_fax}
+EMAIL;TYPE=WORK:{personal_email}
+ADR;TYPE=WORK:;;{company_address};{company_zip};;;
 END:VCARD"""
 
     # iPhone対応のため、改行コードを "\r\n" に統一
@@ -50,8 +52,10 @@ def main():
 
     with st.form("business_card_form"):
         st.subheader("個人情報")
-        name = st.text_input("氏名")
-        furigana = st.text_input("フリガナ")
+        last_name = st.text_input("姓")
+        first_name = st.text_input("名")
+        last_furigana = st.text_input("姓（フリガナ）")
+        first_furigana = st.text_input("名（フリガナ）")
         personal_phone = st.text_input("個人電話番号")
         personal_email = st.text_input("個人メールアドレス")
 
@@ -65,7 +69,8 @@ def main():
         submit_button = st.form_submit_button("QRコードを生成")
 
     if submit_button:
-        vcard_data = generate_vcard(name, furigana, personal_phone, personal_email, 
+        vcard_data = generate_vcard(last_name, first_name, last_furigana, first_furigana,
+                                    personal_phone, personal_email, 
                                     company_name, company_zip, company_address, company_phone, company_fax)
 
         # QRコードを生成（BytesIOオブジェクト）
