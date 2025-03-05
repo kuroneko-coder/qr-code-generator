@@ -72,11 +72,11 @@ def main():
         company_address = st.text_input("🏙️ 会社住所")
         company_phone = st.text_input("☎️ 会社代表電話番号")
         company_fax = st.text_input("📠 会社代表FAX番号")
-        company_website = st.text_input("🔎 会社Webサイト")
+        company_website = st.text_input("🔎 会社Webサイト", "https://fellows2008.co.jp/")
 
         st.subheader("🌍 SNS・PR情報")
-        instagram = st.text_input("Instagram プロフィールURL")
-        youtube = st.text_input("YouTube チャンネルURL")
+        instagram = st.text_input("Instagram プロフィールURL", "https://www.instagram.com/fellows2008/")
+        youtube = st.text_input("YouTube チャンネルURL", "https://www.youtube.com/@fellows2008")
         pr_link = st.text_input("PR紹介URL", "https://fellows2008.co.jp/service/ai/")
 
         submit_button = st.form_submit_button("QRコードを生成")
