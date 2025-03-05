@@ -75,8 +75,8 @@ def main():
         company_website = st.text_input("🔎 会社Webサイト", "https://fellows2008.co.jp/")
 
         st.subheader("🌍 SNS・PR情報")
-        instagram = st.text_input("Instagram プロフィールURL", "https://www.instagram.com/fellows2008/")
-        youtube = st.text_input("YouTube チャンネルURL", "https://www.youtube.com/@fellows2008")
+        instagram = st.text_input("フェローズInstagram URL", "https://www.instagram.com/fellows2008/")
+        youtube = st.text_input("フェローズYouTube チャンネルURL", "https://www.youtube.com/@fellows2008")
         pr_link = st.text_input("ホリエモンAI学校フェローズ校URL", "https://fellows2008.co.jp/service/ai/")
 
         submit_button = st.form_submit_button("QRコードを生成")
