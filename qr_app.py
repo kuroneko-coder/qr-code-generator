@@ -1,27 +1,10 @@
 import streamlit as st
 import qrcode
 from io import BytesIO
-
-def generate_vcard(name, furigana, personal_phone, personal_email, 
-                   company_name, company_zip, company_address, company_phone, company_fax):
-    """VCARD形式の文字列を作成"""
-    vcard = f"""
-BEGIN:VCARD
-VERSION:3.0
-N:{name}
-FN:{furigana}
-TEL;TYPE=CELL:{personal_phone}
-EMAIL:{personal_email}
-ORG:{company_name}
-ADR;TYPE=WORK:;;{company_address};{company_zip}
-TEL;TYPE=WORK:{company_phone}
-TEL;TYPE=FAX:{company_fax}
-END:VCARD
-"""
-    return vcard
+from PIL import Image  # PillowのImageを明示的にインポート
 
 def generate_qr_code(data):
-    """QRコードを生成し、画像を返す"""
+    """QRコードを生成し、画像をバイナリデータに変換"""
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -31,8 +14,15 @@ def generate_qr_code(data):
     qr.add_data(data)
     qr.make(fit=True)
 
-    img = qr.make_image(fill="black", back_color="white")
-    return img
+    # PILのImageオブジェクトとしてQRコードを生成
+    img = qr.make_image(fill="black", back_color="white").convert("RGB")
+
+    # 画像をBytesIOに保存（st.image() で表示するため）
+    img_bytes = BytesIO()
+    img.save(img_bytes, format="PNG")
+    img_bytes.seek(0)
+
+    return img_bytes  # BytesIOオブジェクトを返す
 
 def main():
     st.title("QRコード作成アプリ")
@@ -55,23 +45,29 @@ def main():
         submit_button = st.form_submit_button("QRコードを生成")
 
     if submit_button:
-        # VCARDデータを作成
-        vcard_data = generate_vcard(name, furigana, personal_phone, personal_email, 
-                                    company_name, company_zip, company_address, company_phone, company_fax)
+        vcard_data = f"""
+        BEGIN:VCARD
+        VERSION:3.0
+        N:{name}
+        FN:{furigana}
+        TEL;TYPE=CELL:{personal_phone}
+        EMAIL:{personal_email}
+        ORG:{company_name}
+        ADR;TYPE=WORK:;;{company_address};{company_zip}
+        TEL;TYPE=WORK:{company_phone}
+        TEL;TYPE=FAX:{company_fax}
+        END:VCARD
+        """
 
-        # QRコード画像を生成
-        qr_img = generate_qr_code(vcard_data)
+        # QRコードを生成（BytesIOオブジェクト）
+        qr_bytes = generate_qr_code(vcard_data)
 
         # QRコードを表示
-        st.image(qr_img, caption="生成されたQRコード")
+        st.image(qr_bytes, caption="生成されたQRコード")
 
         # QRコードをダウンロード可能にする
-        img_bytes = BytesIO()
-        qr_img.save(img_bytes, format="PNG")
-        img_bytes.seek(0)
-
         st.download_button(label="QRコードをダウンロード",
-                           data=img_bytes,
+                           data=qr_bytes,
                            file_name="business_card_qr.png",
                            mime="image/png")
 
