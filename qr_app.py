@@ -89,7 +89,8 @@ def generate_qr_code(data):
     return img_bytes
 
 def main():
-    st.title("✨ ゴージャスな QRコード作成アプリ ✨")
+    st.title("✨ QRコード作成アプリ ✨")
+    st.write("名刺の情報をQRコード化し、スマートフォンの電話帳に登録できる形式で出力します。")
 
     with st.form("business_card_form"):
         st.subheader("📜 個人情報")
