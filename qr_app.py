@@ -9,16 +9,18 @@ def generate_vcard(name, furigana, personal_phone, personal_email,
     vcard = f"""BEGIN:VCARD
 VERSION:3.0
 N:{name};;;;
-FN:{furigana}
+FN:{name}
+SORT-STRING:{furigana}
 TEL;TYPE=CELL:{personal_phone}
 EMAIL:{personal_email}
 ORG:{company_name}
-ADR;TYPE=WORK:;;{company_address};;{company_zip};;;
+TITLE:勤務先
+ADR;TYPE=WORK:;;{company_name} {company_address};{company_zip};;;
 TEL;TYPE=WORK:{company_phone}
 TEL;TYPE=FAX:{company_fax}
 END:VCARD"""
-    
-    # iPhone対応のため、改行コードを明示的に "\r\n" にする
+
+    # iPhone対応のため、改行コードを "\r\n" に統一
     return vcard.replace("\n", "\r\n")
 
 def generate_qr_code(data):
