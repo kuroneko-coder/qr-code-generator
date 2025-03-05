@@ -77,7 +77,7 @@ def main():
         st.subheader("🌍 SNS・PR情報")
         instagram = st.text_input("Instagram プロフィールURL", "https://www.instagram.com/fellows2008/")
         youtube = st.text_input("YouTube チャンネルURL", "https://www.youtube.com/@fellows2008")
-        pr_link = st.text_input("PR紹介URL", "https://fellows2008.co.jp/service/ai/")
+        pr_link = st.text_input("ホリエモンAI学校フェローズ校URL", "https://fellows2008.co.jp/service/ai/")
 
         submit_button = st.form_submit_button("QRコードを生成")
 
