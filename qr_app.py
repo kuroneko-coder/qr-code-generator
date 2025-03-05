@@ -2,50 +2,49 @@ import streamlit as st
 import qrcode
 from io import BytesIO
 from PIL import Image
+import base64
 
-# 🎨 背景画像の設定（アップロードされた画像を使用）
-BACKGROUND_IMAGE = "modern-3d-lighting-lamp-design.jpg"
+def get_base64_of_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
-st.markdown(
-    f"""
+def set_background(image_path):
+    image_base64 = get_base64_of_image(image_path)
+    bg_style = f"""
     <style>
     body {{
-        background-image: url('data:image/jpg;base64,{BACKGROUND_IMAGE}');
+        background-image: url("data:image/jpg;base64,{image_base64}");
         background-size: cover;
         background-position: center;
-        color: #FFD700; /* 文字色（ゴールド） */
     }}
+    </style>
+    """
+    st.markdown(bg_style, unsafe_allow_html=True)
 
-    /* フォームの背景色 */
-    .stTextInput, .stNumberInput, .stTextArea {{
-        background-color: rgba(255, 215, 0, 0.1); /* 半透明ゴールド */
-        color: #FFD700;
-    }}
+# 背景画像を設定
+set_background("background.jpg")
 
-    /* ボタンのカスタマイズ */
-    .stButton>button {{
+st.markdown(
+    """
+    <style>
+    body {
+        color: #FFD700; /* ゴールドの文字色 */
+    }
+
+    .stButton>button {
         background: linear-gradient(145deg, #b8860b, #ffd700);
         color: black;
         border: 2px solid #ffd700;
         font-size: 16px;
         font-weight: bold;
         transition: 0.3s;
-    }}
+    }
 
-    /* ボタンのホバーエフェクト */
-    .stButton>button:hover {{
+    .stButton>button:hover {
         background: #ffd700;
         color: black;
         box-shadow: 0px 0px 10px #ffd700;
-    }}
-
-    /* QRコードの枠 */
-    .stImage img {{
-        border: 5px solid #ffd700;
-        padding: 10px;
-        border-radius: 10px;
-        background: black;
-    }}
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -68,7 +67,6 @@ TEL;TYPE=WORK:{company_phone}
 TEL;TYPE=FAX:{company_fax}
 END:VCARD"""
 
-    # iPhone対応のため、改行コードを "\r\n" に統一
     return vcard.replace("\n", "\r\n")
 
 def generate_qr_code(data):
@@ -82,15 +80,13 @@ def generate_qr_code(data):
     qr.add_data(data)
     qr.make(fit=True)
 
-    # PILのImageオブジェクトとしてQRコードを生成
     img = qr.make_image(fill="black", back_color="white").convert("RGB")
 
-    # 画像をBytesIOに保存（st.image() で表示するため）
     img_bytes = BytesIO()
     img.save(img_bytes, format="PNG")
     img_bytes.seek(0)
 
-    return img_bytes  # BytesIOオブジェクトを返す
+    return img_bytes
 
 def main():
     st.title("✨ ゴージャスな QRコード作成アプリ ✨")
@@ -115,13 +111,10 @@ def main():
         vcard_data = generate_vcard(name, furigana, personal_phone, personal_email, 
                                     company_name, company_zip, company_address, company_phone, company_fax)
 
-        # QRコードを生成（BytesIOオブジェクト）
         qr_bytes = generate_qr_code(vcard_data)
 
-        # QRコードを表示
         st.image(qr_bytes, caption="📸 生成されたQRコード")
 
-        # QRコードをダウンロード可能にする
         st.download_button(label="📥 QRコードをダウンロード",
                            data=qr_bytes,
                            file_name="business_card_qr.png",
